@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { BehaviorSubject } from 'rxjs';
 import { Cart, CartItem } from '../models/cart.model';
 
@@ -9,6 +9,12 @@ import { Cart, CartItem } from '../models/cart.model';
 export class CartService {
   cart = new BehaviorSubject<Cart>({ items: [] });
   constructor(private _snackBar: MatSnackBar) {}
+
+  config: MatSnackBarConfig = {
+    horizontalPosition: 'end',
+    verticalPosition: 'bottom',
+    duration: 3000,
+  };
 
   addToCart(item: CartItem) {
     const items = [...this.cart.value.items];
@@ -23,7 +29,7 @@ export class CartService {
 
     this.cart.next({ items });
 
-    this._snackBar.open('1 item added to cart', 'Ok', { duration: 3000 });
+    this._snackBar.open('1 item added to cart', 'Ok', this.config);
     console.log(this.cart.value);
   }
   getTotal(items: Array<CartItem>) {
@@ -33,7 +39,7 @@ export class CartService {
   }
   clearCart() {
     this.cart.next({ items: [] });
-    this._snackBar.open('No more items', 'Ok', { duration: 3000 });
+    this._snackBar.open('No more items', 'Ok', this.config);
   }
   removeFromCart(item: CartItem, update = true) {
     const filteredItems = this.cart.value.items.filter((_item) => {
@@ -63,6 +69,6 @@ export class CartService {
       filteredItems = this.removeFromCart(itemForRemoval, false);
     }
     this.cart.next({ items: filteredItems });
-    this._snackBar.open('1 item removed from cart', 'Ok', { duration: 3000 });
+    this._snackBar.open('1 item removed from cart', 'Ok', this.config);
   }
 }
